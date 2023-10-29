@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/services.dart';
+import 'package:service_app/models/login_model.dart';
+import 'package:service_app/screens/main_screen/dashboard_screen.dart';
+import 'package:service_app/services/account_service.dart';
 import 'package:service_app/widgets/google_login_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,90 +20,141 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
       body: GestureDetector(
         onTap: () {
           // Handle tap on screen to dismiss keyboard
           FocusScope.of(context).unfocus();
         },
-        child: ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 60, bottom: 20),
+                child: Center(
+                  child: Text(
                     'Welcome to AntChores',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'LOGIN',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: _phoneNumberController,
-                    decoration: InputDecoration(
-                      labelText: 'Phone number',
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    obscureText: true,
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ConstrainedBox(
-                    constraints:
-                        const BoxConstraints.tightFor(width: double.infinity),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Handle login button click
-                      },
-                      child: Text('Login'),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  GoogleLoginButton(
-                    onPressed: () {
-                      // Handle login with Google button click
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Don't have an account? "),
-                      TextButton(
-                        onPressed: () {
-                          // Handle register button click
-                        },
-                        child: Text('Register'),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              const Center(
+                child: Text(
+                  'LOGIN',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _phoneNumberController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      decoration: const InputDecoration(
+                        labelText: 'Phone number',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      obscureText: true,
+                      controller: _passwordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ConstrainedBox(
+                      constraints:
+                          const BoxConstraints.tightFor(width: double.infinity),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          LoginModel loginModel = LoginModel(
+                            phoneNumber: _phoneNumberController.text,
+                            password: _passwordController.text,
+                          );
+
+                          String token = await AccountService.login(loginModel);
+
+                          if (token == "") {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Login failed'),
+                              ),
+                            );
+                          } else {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setBool('loggedIn', true);
+                            prefs.setString('token', token);
+
+                            // loading in center in 2 seconds
+                            Future.delayed(
+                              const Duration(seconds: 2),
+                              () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+
+                            Future.delayed(
+                              const Duration(seconds: 0),
+                              () {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const DashBoardScreen(),
+                                  ),
+                                  (route) => false,
+                                );
+                              },
+                            );
+                          }
+                        },
+                        child: Text('Login'),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    GoogleLoginButton(
+                      onPressed: () {
+                        // Handle login with Google button click
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Don't have an account? "),
+                        TextButton(
+                          onPressed: () {
+                            // Handle register button click
+                          },
+                          child: const Text('Register'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:service_app/models/category.dart';
+import 'package:service_app/services/category_service.dart';
+import 'package:service_app/utils/app_colors.dart';
 import 'package:service_app/widgets/banner_card_widget.dart';
 import 'package:service_app/widgets/service_card_widget.dart';
 
@@ -11,38 +14,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // final flagList = [
-  //   const DropdownMenuItem(
-  //     value: 1,
-  //     child: Row(
-  //       children: [
-  //         Image(
-  //           image: AssetImage("assets/flags/vietnam.png"),
-  //           height: 20,
-  //           width: 20,
-  //           fit: BoxFit.cover,
-  //         ),
-  //         SizedBox(width: 10),
-  //         Text("Vn", style: TextStyle(color: Colors.black, fontSize: 12)),
-  //       ],
-  //     ),
-  //   ),
-  //   const DropdownMenuItem(
-  //     value: 2,
-  //     child: Row(
-  //       children: [
-  //         Image(
-  //           image: AssetImage("assets/flags/united-kingdom.png"),
-  //           height: 20,
-  //           width: 20,
-  //           fit: BoxFit.cover,
-  //         ),
-  //         SizedBox(width: 10),
-  //         Text("En", style: TextStyle(color: Colors.black, fontSize: 12)),
-  //       ],
-  //     ),
-  //   ),
-  // ];
+  List<Category> categories = [];
+  late Future<List<Category>> futureCategories;
+
+  @override
+  void initState() {
+    super.initState();
+    futureCategories = CategoryService.getCategories();
+
+    futureCategories.then((value) {
+      setState(() {
+        categories = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,11 +156,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-            /*
-            * This is show list of banner and this is show horizontal
-            * and this is using widget BannerCardWidget
-            * */
             Container(
               padding: const EdgeInsets.symmetric(vertical: 10),
               height: 200,
@@ -186,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: 5,
                 itemBuilder: (BuildContext context, int index) {
                   return BannerCardWidget(
-                    imageUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+                    imageUrl: "assets/tree.jpg",
                     title: "Title",
                     description: "Description",
                     onPressed: () {
@@ -196,7 +176,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            const SizedBox(height: 10),
             Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -212,71 +191,53 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              height: 100,
-              width: MediaQuery.of(context).size.width,
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ServiceCardWidget(
-                    serviceName: "Cleaning",
-                    icon: FontAwesomeIcons.broom,
-                    backgroundColor: Colors.yellow,
-                  ),
-                  ServiceCardWidget(
-                    serviceName: "Repairing",
-                    icon: FontAwesomeIcons.broom,
-                    backgroundColor: Colors.pink,
-                  ),
-                  ServiceCardWidget(
-                    serviceName: "Cooking",
-                    icon: FontAwesomeIcons.utensils,
-                    backgroundColor: Colors.lightBlue,
-                  ),
-                  ServiceCardWidget(
-                    serviceName: "Cleaning",
-                    icon: FontAwesomeIcons.broom,
-                    backgroundColor: Colors.green,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              height: 100,
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const ServiceCardWidget(
-                    serviceName: "Cleaning",
-                    icon: FontAwesomeIcons.broom,
-                    backgroundColor: Colors.deepOrange,
-                  ),
-                  const ServiceCardWidget(
-                    serviceName: "Repairing",
-                    icon: FontAwesomeIcons.broom,
-                    backgroundColor: Colors.cyan,
-                  ),
-                  const ServiceCardWidget(
-                    serviceName: "Cooking",
-                    icon: FontAwesomeIcons.utensils,
-                    backgroundColor: Colors.lightBlue,
-                  ),
-                  ServiceCardWidget(
-                    serviceName: "More",
-                    backgroundColor: Colors.grey[200],
-                    icon: FontAwesomeIcons.compress,
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (BuildContext context) {
-                          return const CustomBottomSheet();
-                        },
-                      );
-                    },
-                  ),
-                ],
+              child: FutureBuilder<List<Category>>(
+                future: CategoryService.getCategories(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Wrap(
+                      alignment: WrapAlignment.start,
+                      // Align items from left to right
+                      children: [
+                        for (int index = 0;
+                            index < snapshot.data!.length;
+                            index++)
+                          ServiceCardWidget(
+                            serviceName: snapshot.data![index].name ?? "",
+                            textColor: Colors.white,
+                            icon: FontAwesomeIcons.broom,
+                            backgroundColor: AppColors.predefinedColors(),
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/services',
+                                arguments: snapshot.data![index],
+                              );
+                            },
+                          ),
+                        ServiceCardWidget(
+                          serviceName: "More",
+                          backgroundColor: Colors.grey[200],
+                          icon: FontAwesomeIcons.compress,
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (BuildContext context) {
+                                return const CustomBottomSheet();
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               ),
             ),
           ],
@@ -314,12 +275,44 @@ class CustomBottomSheet extends StatelessWidget {
                   ),
                 ],
               ),
-              const Text(
-                'This is a custom bottom sheet',
-                style: TextStyle(fontSize: 20),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: FutureBuilder<List<Category>>(
+                  future: CategoryService.getCategories(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Wrap(
+                        alignment: WrapAlignment.start,
+                        // Align items from left to right
+                        children: [
+                          for (int index = 0;
+                              index < snapshot.data!.length;
+                              index++)
+                            ServiceCardWidget(
+                              serviceName: snapshot.data![index].name ?? "",
+                              textColor: Colors.white,
+                              icon: FontAwesomeIcons.broom,
+                              backgroundColor: AppColors.predefinedColors(),
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/services',
+                                  arguments: snapshot.data![index],
+                                );
+                              },
+                            ),
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                ),
               ),
-              const SizedBox(height: 16),
-              const Text('You can put your content here.'),
             ],
           );
         },

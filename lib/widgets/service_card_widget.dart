@@ -20,36 +20,34 @@ class ServiceCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        decoration: BoxDecoration(
-          color: backgroundColor ?? Colors.grey[200],
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        width: 80,
-        height: 80,
-        padding: const EdgeInsets.all(10.0),
-        child: InkWell(
-          onTap: onTap,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 22,
-                color: iconColor ?? Colors.black,
+    return Container(
+      margin: const EdgeInsets.only(right: 10.0, bottom: 10.0),
+      decoration: BoxDecoration(
+        color: backgroundColor ?? Colors.grey[200],
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      width: 100,
+      padding: const EdgeInsets.all(10.0),
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 30,
+              color: iconColor ?? Colors.black,
+            ),
+            const SizedBox(height: 7.0),
+            Text(
+              serviceName,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.normal,
+                color: textColor ?? Colors.black,
               ),
-              const SizedBox(height: 7.0),
-              Text(
-                serviceName,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.normal,
-                  color: textColor ?? Colors.black,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

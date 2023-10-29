@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:service_app/screens/login_screen.dart';
 import 'package:service_app/screens/profile_screen/history_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'help_screen.dart';
 
@@ -43,11 +44,11 @@ class _AccountScreenState extends State<AccountScreen> {
           horizontal: 5,
           vertical: 5,
         ),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Expanded(
+            Expanded(
               flex: 1,
               child: CircleAvatar(
                 radius: 40,
@@ -60,27 +61,11 @@ class _AccountScreenState extends State<AccountScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Welcome to AntChores",
+                  Text(
+                    "Welcome to Ant Chores",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return const LoginScreen();
-                      }));
-                    },
-                    child: const Text(
-                      "Login Or Register",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
-                      ),
                     ),
                   ),
                 ],
@@ -137,7 +122,24 @@ class _AccountScreenState extends State<AccountScreen> {
           Icons.logout,
           "Logout",
           "Logout from your account",
-          () {},
+          () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.remove('token');
+            prefs.setBool('loggedIn', false);
+
+            Future.delayed(
+              const Duration(seconds: 0),
+              () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                  (route) => false,
+                );
+              },
+            );
+          },
         ),
       ],
     );

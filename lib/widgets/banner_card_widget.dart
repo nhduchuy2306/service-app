@@ -23,11 +23,12 @@ class BannerCardWidget extends StatelessWidget {
       child: Card(
         child: Stack(
           children: [
-            Image.network(
+            Image.asset(
               imageUrl,
-              fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
+              fit: BoxFit.cover,
+              scale: 1.0,
             ),
             Container(
               width: double.infinity,

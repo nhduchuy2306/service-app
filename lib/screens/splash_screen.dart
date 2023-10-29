@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:service_app/screens/login_screen.dart';
 import 'package:service_app/screens/main_screen/dashboard_screen.dart';
 import 'package:service_app/screens/onboarding_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   setupPageTransition() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final bool? seen = prefs.getBool('seen');
+    final bool? loggedIn = prefs.getBool('loggedIn');
     if (seen == null || seen == false) {
       prefs.setBool('seen', true);
       Future.delayed(const Duration(seconds: 3), () {
@@ -29,6 +31,16 @@ class _SplashScreenState extends State<SplashScreen> {
           PageTransition(
             type: PageTransitionType.fade,
             child: const OnBoardingScreen(),
+          ),
+        );
+      });
+    } else if (loggedIn == null || loggedIn == false) {
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: const LoginScreen(),
           ),
         );
       });
@@ -64,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Column(
                 children: [
                   Text(
-                    "AntChores",
+                    "Ant Chores",
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,

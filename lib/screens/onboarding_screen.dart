@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:service_app/screens/login_screen.dart';
 import 'package:service_app/screens/main_screen/dashboard_screen.dart';
 import 'package:service_app/screens/onboard_pages/page1.dart';
 import 'package:service_app/screens/onboard_pages/page2.dart';
@@ -53,7 +54,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,
-                      child: const DashBoardScreen(),
+                      child: const LoginScreen(),
                     ),
                   );
                 },
@@ -84,7 +85,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const DashBoardScreen(),
+                          builder: (context) => const LoginScreen(),
                         ),
                       );
                     },

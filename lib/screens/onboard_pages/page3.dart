@@ -15,11 +15,13 @@ class Page3Screen extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.7,
           ),
           const SizedBox(height: 20),
-          const Text(
-            "This is the third page of the onboarding screen.",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 16,
+          const Center(
+            child: Text(
+              "This is the third page of the onboarding screen.",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+              ),
             ),
           ),
         ],
