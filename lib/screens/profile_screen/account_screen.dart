@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:service_app/models/customer.dart';
 import 'package:service_app/screens/login_screen.dart';
 import 'package:service_app/screens/profile_screen/history_screen.dart';
+import 'package:service_app/services/customer_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'help_screen.dart';
@@ -44,11 +46,11 @@ class _AccountScreenState extends State<AccountScreen> {
           horizontal: 5,
           vertical: 5,
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
+            const Expanded(
               flex: 1,
               child: CircleAvatar(
                 radius: 40,
@@ -61,12 +63,23 @@ class _AccountScreenState extends State<AccountScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    "Welcome to Ant Chores",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  FutureBuilder<Customer>(
+                    future: CustomerService.getCustomerFromSharedPreferences(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(
+                          "Welcome ${snapshot.data!.name ?? ""}",
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),

@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:service_app/models/account_token_model.dart';
+import 'package:service_app/models/customer.dart';
 import 'package:service_app/models/login_model.dart';
 import 'package:service_app/screens/main_screen/dashboard_screen.dart';
 import 'package:service_app/services/account_service.dart';
+import 'package:service_app/services/customer_service.dart';
 import 'package:service_app/widgets/google_login_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -84,37 +89,38 @@ class _LoginScreenState extends State<LoginScreen> {
                             password: _passwordController.text,
                           );
 
-                          String token = await AccountService.login(loginModel);
+                          AccountToken accountToken =
+                              await AccountService.login(loginModel);
 
-                          if (token == "") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Login failed'),
-                              ),
+                          if (accountToken.token == "") {
+                            Future.delayed(
+                              const Duration(seconds: 3),
+                              () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Login failed'),
+                                  ),
+                                );
+                              },
                             );
                           } else {
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
                             prefs.setBool('loggedIn', true);
-                            prefs.setString('token', token);
+                            prefs.setString('token', accountToken.token ?? "");
 
-                            // loading in center in 2 seconds
-                            Future.delayed(
-                              const Duration(seconds: 2),
-                              () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  },
-                                );
-                              },
-                            );
+                            Customer? customer =
+                                await CustomerService.getCustomerByAccountId(
+                                    accountToken.account!.accountId ?? 0);
+
+                            if (customer != null) {
+                              String customerString =
+                                  json.encode(customer.toJson());
+                              prefs.setString('customer', customerString);
+                            }
 
                             Future.delayed(
-                              const Duration(seconds: 0),
+                              const Duration(seconds: 3),
                               () {
                                 Navigator.pushAndRemoveUntil(
                                   context,

@@ -208,11 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             icon: FontAwesomeIcons.broom,
                             backgroundColor: AppColors.predefinedColors(),
                             onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/services',
-                                arguments: snapshot.data![index],
-                              );
+                              print("tap tap " + snapshot.data![index].id.toString());
                             },
                           ),
                         ServiceCardWidget(

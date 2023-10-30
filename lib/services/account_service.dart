@@ -5,7 +5,7 @@ import 'package:service_app/models/account_token_model.dart';
 import 'package:service_app/models/login_model.dart';
 
 class AccountService {
-  static Future<String> login(LoginModel loginModel) async {
+  static Future<AccountToken> login(LoginModel loginModel) async {
     final response = await http.post(
       Uri.parse("http://192.168.1.122:5000/api/a/auths"),
       headers: <String, String>{
@@ -16,10 +16,10 @@ class AccountService {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       var data = json.decode(response.body);
-      String token = AccountToken.fromJson(data).token!;
-      return token;
+      AccountToken accountToken = AccountToken.fromJson(data);
+      return accountToken;
     } else {
-      return "";
+      return AccountToken(token: "");
     }
   }
 }

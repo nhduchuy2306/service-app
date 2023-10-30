@@ -23,21 +23,21 @@ class AccountToken {
 class Account {
   String? phoneNumber;
   String? role;
-  int? userId;
+  int? accountId;
 
-  Account({this.phoneNumber, this.role, this.userId});
+  Account({this.phoneNumber, this.role, this.accountId});
 
   Account.fromJson(Map<String, dynamic> json) {
     phoneNumber = json['phoneNumber'];
     role = json['role'];
-    userId = json['userId'];
+    accountId = json['accountId'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['phoneNumber'] = phoneNumber;
     data['role'] = role;
-    data['userId'] = userId;
+    data['accountId'] = accountId;
     return data;
   }
 }
