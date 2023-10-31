@@ -137,8 +137,9 @@ class _AccountScreenState extends State<AccountScreen> {
           "Logout from your account",
           () async {
             SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.remove('loggedIn');
             prefs.remove('token');
-            prefs.setBool('loggedIn', false);
+            prefs.remove('customer');
 
             Future.delayed(
               const Duration(seconds: 0),

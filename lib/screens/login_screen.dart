@@ -37,9 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: EdgeInsets.only(top: 60, bottom: 20),
                 child: Center(
                   child: Text(
-                    'Welcome to AntChores',
+                    'WELCOME TO ANT CHORES',
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:service_app/models/category.dart';
+import 'package:service_app/screens/job_posting_screen/address_screen.dart';
 import 'package:service_app/services/category_service.dart';
 import 'package:service_app/utils/app_colors.dart';
 import 'package:service_app/widgets/banner_card_widget.dart';
@@ -208,7 +210,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             icon: FontAwesomeIcons.broom,
                             backgroundColor: AppColors.predefinedColors(),
                             onTap: () {
-                              print("tap tap " + snapshot.data![index].id.toString());
+                              Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.bottomToTop,
+                                  child: AddressScreen(
+                                    categoryId: snapshot.data![index].id ?? 1,
+                                  ),
+                                ),
+                              );
                             },
                           ),
                         ServiceCardWidget(

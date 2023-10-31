@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerService {
   static Future<Customer?> getCustomerByAccountId(int accountId) async {
-    String url = "${Constant.baseUrlAuth}/a/accounts/$accountId/customer";
+    String url = "${Constant.baseUrlAuth}/a/accounts/$accountId/customers";
 
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
