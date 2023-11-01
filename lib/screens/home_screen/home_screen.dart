@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         controller: ScrollController(),
@@ -201,13 +202,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       alignment: WrapAlignment.start,
                       // Align items from left to right
                       children: [
-                        for (int index = 0;
-                            index < snapshot.data!.length;
-                            index++)
+                        for (int index = 0; index < 5; index++)
                           ServiceCardWidget(
                             serviceName: snapshot.data![index].name ?? "",
                             textColor: Colors.white,
-                            icon: FontAwesomeIcons.broom,
+                            icon: Icons.cleaning_services,
                             backgroundColor: AppColors.predefinedColors(),
                             onTap: () {
                               Navigator.push(
@@ -215,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 PageTransition(
                                   type: PageTransitionType.bottomToTop,
                                   child: AddressScreen(
-                                    categoryId: snapshot.data![index].id ?? 1,
+                                    category: snapshot.data![index],
                                   ),
                                 ),
                               );
@@ -301,10 +300,15 @@ class CustomBottomSheet extends StatelessWidget {
                               icon: FontAwesomeIcons.broom,
                               backgroundColor: AppColors.predefinedColors(),
                               onTap: () {
-                                Navigator.pushNamed(
+                                Navigator.pop(context);
+                                Navigator.push(
                                   context,
-                                  '/services',
-                                  arguments: snapshot.data![index],
+                                  PageTransition(
+                                    type: PageTransitionType.bottomToTop,
+                                    child: AddressScreen(
+                                      category: snapshot.data![index],
+                                    ),
+                                  ),
                                 );
                               },
                             ),

@@ -31,6 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
           FocusScope.of(context).unfocus();
         },
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          controller: ScrollController(),
           child: Column(
             children: [
               const Padding(

@@ -38,7 +38,8 @@ dependencies:
   http:
   flutter_local_notifications:
   url_launcher:
-  table_calendar:
+  date_picker_timeline: ^1.2.5
+  flutter_datetime_picker_bdaya: ^3.0.2
 
 dev_dependencies:
   flutter_test:

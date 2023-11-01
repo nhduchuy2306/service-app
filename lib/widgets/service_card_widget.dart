@@ -27,6 +27,7 @@ class ServiceCardWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
       ),
       width: 100,
+      height: 110,
       padding: const EdgeInsets.all(10.0),
       child: InkWell(
         onTap: onTap,

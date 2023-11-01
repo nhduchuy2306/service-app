@@ -1,7 +1,7 @@
 class TaskDetail {
   int? id;
   String? name;
-  int? price;
+  double? price;
   int? duration;
   int? unit;
   int? quantity;
