@@ -10,7 +10,7 @@ void main() {
 
 void init() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  print(prefs.getString('token'));
+  print(prefs.getString("token"));
   print(prefs.getString("customer"));
 }
 

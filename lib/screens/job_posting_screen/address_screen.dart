@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:service_app/models/category.dart';
 import 'package:service_app/models/customer.dart';
 import 'package:service_app/models/task_detail_model.dart';
-import 'package:service_app/screens/job_posting_screen/service_screen.dart';
+import 'package:service_app/screens/job_posting_screen/multi_service_screen.dart';
 import 'package:service_app/services/customer_service.dart';
 import 'package:service_app/services/task_detail_service.dart';
 
@@ -18,6 +18,8 @@ class AddressScreen extends StatefulWidget {
 class _AddressScreenState extends State<AddressScreen> {
   List<TaskDetail> taskDetails = [];
   late Future<List<TaskDetail>?> futureTaskDetails;
+  late Future<Customer> futureCustomer;
+  Customer? customer;
 
   @override
   void initState() {
@@ -25,9 +27,17 @@ class _AddressScreenState extends State<AddressScreen> {
     futureTaskDetails =
         TaskDetailService.getAllTaskDetailByCategoryId(widget.category.id!);
 
+    futureCustomer = CustomerService.getCustomerFromSharedPreferences();
+
     futureTaskDetails.then((value) {
       setState(() {
         taskDetails = value!;
+      });
+    });
+
+    futureCustomer.then((value) {
+      setState(() {
+        customer = value;
       });
     });
   }
@@ -60,10 +70,12 @@ class _AddressScreenState extends State<AddressScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ServiceScreen(
-                              taskDetails: taskDetails,
-                              category: widget.category,
-                            )),
+                      builder: (context) => MultiServiceScreen(
+                        taskDetails: taskDetails,
+                        category: widget.category,
+                        customer: customer,
+                      ),
+                    ),
                   );
                 },
                 child: Container(

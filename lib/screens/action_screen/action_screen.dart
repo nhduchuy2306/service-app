@@ -111,7 +111,7 @@ class AcceptTab extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            snapshot.data?[index].total.toString() ?? "",
+                            "${snapshot.data?[index].total?.toStringAsFixed(0)} VND",
                             style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,

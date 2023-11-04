@@ -175,6 +175,7 @@ class _AccountScreenState extends State<AccountScreen> {
         vertical: 5,
       ),
       child: Card(
+        color: Colors.white,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),

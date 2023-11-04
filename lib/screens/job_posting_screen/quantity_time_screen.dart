@@ -2,21 +2,28 @@ import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:service_app/models/quantity_unit.dart';
+import 'package:service_app/models/cart_model.dart';
+import 'package:service_app/models/customer.dart';
+import 'package:service_app/models/task_detail_model.dart';
 import 'package:service_app/screens/job_posting_screen/confirm_checkout_screen.dart';
 
 class QuantityTimeScreen extends StatefulWidget {
-  const QuantityTimeScreen({super.key, required this.type});
+  const QuantityTimeScreen({
+    super.key,
+    required this.cartItems,
+    required this.customer,
+    required this.taskDetails,
+  });
 
-  final QuantityEnum type;
+  final List<CartItems>? cartItems;
+  final List<TaskDetail>? taskDetails;
+  final Customer? customer;
 
   @override
   State<QuantityTimeScreen> createState() => _QuantityTimeScreenState();
 }
 
 class _QuantityTimeScreenState extends State<QuantityTimeScreen> {
-  final TextEditingController _quantityController = TextEditingController();
-  final TextEditingController _areaController = TextEditingController();
   DateTime _selectedValue = DateTime.now();
   String hour = "00";
   String minute = "00";
@@ -138,71 +145,6 @@ class _QuantityTimeScreenState extends State<QuantityTimeScreen> {
                 ),
               ),
             ),
-            widget.type == QuantityEnum.Unit
-                ? Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 10,
-                    ),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        const Text(
-                          "Quantity",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        // show text box field to input quantity
-                        TextField(
-                          controller: _quantityController,
-                          onChanged: (value) {
-                            setState(() {
-                              quantity = value;
-                            });
-                          },
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Enter quantity",
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 10,
-                    ),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        const Text(
-                          "Area",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        TextField(
-                          controller: _areaController,
-                          onChanged: (value) {
-                            setState(() {
-                              area = value;
-                            });
-                          },
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "Enter area",
-                            suffixText: 'm2',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
           ],
         ),
       ),
@@ -214,10 +156,28 @@ class _QuantityTimeScreenState extends State<QuantityTimeScreen> {
         ),
         child: ElevatedButton(
           onPressed: () {
+            CartModel? cartModel = CartModel(
+              customerId: widget.customer?.id,
+              workingAt: _selectedValue.toString(),
+              startTime: DateTime(
+                _selectedValue.year,
+                _selectedValue.month,
+                _selectedValue.day,
+                int.parse(hour),
+                int.parse(minute),
+                int.parse("00"),
+              ).toString(),
+              cartItems: widget.cartItems,
+            );
+
             Navigator.push(
               context,
               PageTransition(
-                child: const ConfirmCheckOutScreen(),
+                child: ConfirmCheckOutScreen(
+                  cartModel: cartModel,
+                  customer: widget.customer,
+                  taskDetails: widget.taskDetails,
+                ),
                 type: PageTransitionType.rightToLeft,
               ),
             );
