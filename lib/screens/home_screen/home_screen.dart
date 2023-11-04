@@ -203,23 +203,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       // Align items from left to right
                       children: [
                         for (int index = 0; index < 5; index++)
-                          ServiceCardWidget(
-                            serviceName: snapshot.data![index].name ?? "",
-                            textColor: Colors.white,
-                            icon: Icons.cleaning_services,
-                            backgroundColor: AppColors.predefinedColors(),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.bottomToTop,
-                                  child: AddressScreen(
-                                    category: snapshot.data![index],
+                          if (index < snapshot.data!.length)
+                            ServiceCardWidget(
+                              serviceName: snapshot.data![index].name ?? "",
+                              textColor: Colors.white,
+                              icon: Icons.cleaning_services,
+                              backgroundColor: AppColors.predefinedColors(),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.bottomToTop,
+                                    child: AddressScreen(
+                                      category: snapshot.data![index],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
+                                );
+                              },
+                            ),
                         ServiceCardWidget(
                           serviceName: "More",
                           backgroundColor: Colors.grey[200],
