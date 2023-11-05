@@ -27,19 +27,20 @@ class ServiceCardWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
       ),
       width: 100,
-      height: 110,
+      height: 120,
       padding: const EdgeInsets.all(10.0),
       child: InkWell(
         onTap: onTap,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            const SizedBox(height: 20),
             Icon(
               icon,
               size: 30,
               color: iconColor ?? Colors.black,
             ),
-            const SizedBox(height: 7.0),
+            const SizedBox(height: 10),
             Text(
               serviceName,
               style: TextStyle(

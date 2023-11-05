@@ -66,8 +66,8 @@ class _SplashScreenState extends State<SplashScreen> {
             Expanded(
               flex: 3,
               child: Image(
-                image: const AssetImage('assets/cleaning-service.png'),
-                fit: BoxFit.cover,
+                image: const AssetImage('assets/logo.png'),
+                fit: BoxFit.fitWidth,
                 width: MediaQuery.of(context).size.width * 0.9,
               ),
             ),

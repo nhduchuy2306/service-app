@@ -170,8 +170,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   return BannerCardWidget(
                     imageUrl: "assets/tree.jpg",
-                    title: "Title",
-                    description: "Description",
+                    title: "Title $index",
+                    description: "Description $index",
                     onPressed: () {
                       print("Banner $index");
                     },
@@ -272,7 +272,7 @@ class CustomBottomSheet extends StatelessWidget {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
+                children: [
                   IconButton(
                     onPressed: () {
                       Navigator.pop(context);

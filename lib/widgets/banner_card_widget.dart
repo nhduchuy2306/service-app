@@ -20,6 +20,9 @@ class BannerCardWidget extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       width: MediaQuery.of(context).size.width * 0.9,
       height: 900,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Card(
         child: Stack(
           children: [
@@ -36,7 +39,7 @@ class BannerCardWidget extends StatelessWidget {
               color: Colors.black.withOpacity(0.3),
             ),
             Positioned(
-              bottom: 10,
+              top: 20,
               left: 10,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,14 +60,32 @@ class BannerCardWidget extends StatelessWidget {
                       fontSize: 11,
                     ),
                   ),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 10,
+              right: 10,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
                   const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: onPressed,
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                    child: const Text('Read More'),
+                    child: const Text(
+                      'Read More',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 11,
+                      ),
+                    ),
                   ),
                 ],
               ),
