@@ -126,7 +126,7 @@ class PendingTab extends StatelessWidget {
                         color: Colors.grey,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             "${snapshot.data?[index].total?.toStringAsFixed(0)} VNĐ",
@@ -239,7 +239,7 @@ class AcceptTab extends StatelessWidget {
                         color: Colors.grey,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             "${snapshot.data?[index].total?.toStringAsFixed(0)} VNĐ",

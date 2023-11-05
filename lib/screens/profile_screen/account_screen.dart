@@ -35,57 +35,54 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   Widget _header() {
-    return Card(
-      color: Colors.white,
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-          horizontal: 5,
-          vertical: 5,
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 5,
-          vertical: 5,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Expanded(
-              flex: 1,
-              child: CircleAvatar(
-                radius: 40,
-                backgroundImage: AssetImage("assets/profile.png"),
-              ),
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: 5,
+        vertical: 5,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 5,
+        vertical: 5,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Expanded(
+            flex: 1,
+            child: CircleAvatar(
+              radius: 40,
+              backgroundImage: AssetImage("assets/profile.png"),
             ),
-            Expanded(
-              flex: 4,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  FutureBuilder<Customer>(
-                    future: CustomerService.getCustomerFromSharedPreferences(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Text(
-                          "Welcome ${snapshot.data!.name ?? ""}",
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
+          ),
+          Expanded(
+            flex: 4,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                FutureBuilder<Customer>(
+                  future: CustomerService.getCustomerFromSharedPreferences(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                        "Welcome ${snapshot.data!.name ?? ""}",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
