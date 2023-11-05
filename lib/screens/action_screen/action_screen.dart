@@ -17,16 +17,17 @@ class _ActionScreenState extends State<ActionScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2, // Number of tabs
+      length: 3, // Number of tabs
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false, // Hide the back button
+          automaticallyImplyLeading: false,
           title: const Text('Action Screen'),
-          centerTitle: true, // Center the title
+          centerTitle: true,
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Pending'),
               Tab(text: 'Accept'),
+              Tab(text: 'Complete'),
             ],
           ),
         ),
@@ -36,6 +37,8 @@ class _ActionScreenState extends State<ActionScreen> {
             PendingTab(),
             // Accept Tab Content
             AcceptTab(),
+            // Complete Tab Content
+            CompleteTab(),
           ],
         ),
       ),
@@ -225,6 +228,122 @@ class AcceptTab extends StatelessWidget {
                                     (snapshot.data?[index].startTime!.length)! -
                                         3,
                                   ) ??
+                                  "",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "${snapshot.data?[index].total?.toStringAsFixed(0)} VNĐ",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          return const CircularProgressIndicator();
+        }
+        return const CircularProgressIndicator();
+      },
+    );
+  }
+}
+
+class CompleteTab extends StatelessWidget {
+  const CompleteTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Firstly, get customerId from SharePreferences
+    Future<List<Order>> fetchOrders() async {
+      Customer customer =
+      await CustomerService.getCustomerFromSharedPreferences();
+      List<Order> orders =
+      await CustomerService.getOrderByStateOfCustomer(customer.id ?? 2, 1);
+      return orders;
+    }
+
+    // Then, call CustomerService.getOrderByStateOfCustomer(customerId, 1)
+    return FutureBuilder<List<Order>>(
+      future: fetchOrders(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            itemCount: snapshot.data?.length,
+            itemBuilder: (context, index) {
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 10,
+                ),
+                child: Card(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          snapshot.data?[index].categoryName ?? "",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              snapshot.data?[index].address ?? "",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data?[index].workingAt?.substring(
+                                  0,
+                                  snapshot.data?[index].startTime!
+                                      .indexOf("T")) ??
+                                  "",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data?[index].startTime?.substring(
+                                (snapshot.data?[index].startTime!
+                                    .indexOf("T") ??
+                                    1) +
+                                    1,
+                                (snapshot.data?[index].startTime!.length)! -
+                                    3,
+                              ) ??
                                   "",
                               style: const TextStyle(
                                 color: Colors.black,
