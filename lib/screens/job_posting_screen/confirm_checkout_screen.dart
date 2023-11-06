@@ -248,7 +248,7 @@ class _ConfirmCheckOutScreenState extends State<ConfirmCheckOutScreen> {
                   Navigator.push(
                     context,
                     PageTransition(
-                      child: const DashBoardScreen(),
+                      child: const DashBoardScreen(initIndex: 0,),
                       type: PageTransitionType.fade,
                     ),
                   );

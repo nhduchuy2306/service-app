@@ -46,4 +46,5 @@ class CustomerService {
     Customer customer = Customer.fromJson(json.decode(customerString));
     return customer;
   }
+
 }

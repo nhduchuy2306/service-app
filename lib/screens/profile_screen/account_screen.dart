@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:service_app/models/customer.dart';
+import 'package:service_app/screens/action_screen/action_screen.dart';
 import 'package:service_app/screens/login_screen.dart';
+import 'package:service_app/screens/main_screen/dashboard_screen.dart';
 import 'package:service_app/screens/profile_screen/history_screen.dart';
+import 'package:service_app/screens/profile_screen/info_screen.dart';
 import 'package:service_app/services/customer_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -94,13 +97,21 @@ class _AccountScreenState extends State<AccountScreen> {
           Icons.person,
           "Personal Information",
           "Update your personal information",
-          () {},
+          () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return const InfoScreen();
+            }));
+          },
         ),
         _settingTag(
           Icons.bookmark,
           "Orders",
           "View your orders",
-          () {},
+          () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return const DashBoardScreen(initIndex: 1);
+            }));
+          },
         ),
         _settingTag(
           Icons.history_sharp,

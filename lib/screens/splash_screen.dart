@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
           context,
           PageTransition(
             type: PageTransitionType.fade,
-            child: const DashBoardScreen(),
+            child: const DashBoardScreen(initIndex: 0,),
           ),
         );
       });

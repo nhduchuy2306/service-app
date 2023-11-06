@@ -6,7 +6,8 @@ import 'package:service_app/screens/message_screen/message_screen.dart';
 import 'package:service_app/utils/app_colors.dart';
 
 class DashBoardScreen extends StatefulWidget {
-  const DashBoardScreen({super.key});
+  final int initIndex;
+  const DashBoardScreen({Key? key, required this.initIndex}) : super(key: key);
 
   @override
   State<DashBoardScreen> createState() => _DashBoardScreenState();
@@ -28,7 +29,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       label: "Home",
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.paste),
+      icon: Icon(Icons.task),
       label: "Action",
     ),
     const BottomNavigationBarItem(
@@ -44,7 +45,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   void initState() {
     super.initState();
-    _currentIndex = 0;
+    _currentIndex = widget.initIndex;
   }
 
   @override

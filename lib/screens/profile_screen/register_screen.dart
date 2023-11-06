@@ -1,27 +1,26 @@
-import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:service_app/models/account_token_model.dart';
-import 'package:service_app/models/customer.dart';
-import 'package:service_app/models/login_model.dart';
-import 'package:service_app/screens/main_screen/dashboard_screen.dart';
-import 'package:service_app/screens/profile_screen/register_screen.dart';
+import 'package:service_app/models/register_model.dart';
+import 'package:service_app/screens/login_screen.dart';
 import 'package:service_app/services/account_service.dart';
-import 'package:service_app/services/customer_service.dart';
-import 'package:service_app/widgets/google_login_button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+import '../../widgets/google_login_button.dart';
+
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _RegisterScreenState extends State<RegisterScreen> {
+  final TextEditingController _phoneNumber = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _address = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +36,14 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 60, bottom: 0),
+                padding: const EdgeInsets.only(top: 40, bottom: 0),
                 child: Center(
                   child: Image(
                     image: const AssetImage('assets/logo2.png'),
                     fit: BoxFit.fitWidth,
                     width: MediaQuery.of(context).size.width * 0.9,
                     // height: 250,
-                    height: 180,
+                    height: 150,
                   ),
                 ),
               ),
@@ -58,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
               // const SizedBox(height: 20),
               const Center(
                 child: Text(
-                  'LOGIN',
+                  'SIGN UP',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -66,12 +65,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.only(top: 0, left: 20, right: 20, bottom: 20),
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
                     TextField(
-                      controller: _phoneNumberController,
+                      controller: _phoneNumber,
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -83,9 +82,33 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 10),
                     TextField(
                       obscureText: true,
-                      controller: _passwordController,
+                      controller: _password,
                       decoration: const InputDecoration(
                         labelText: 'Password',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _email,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _name,
+                      keyboardType: TextInputType.name,
+                      decoration: const InputDecoration(
+                        labelText: 'Full Name',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _address,
+                      keyboardType: TextInputType.streetAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'Address',
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -94,50 +117,41 @@ class _LoginScreenState extends State<LoginScreen> {
                           const BoxConstraints.tightFor(width: double.infinity),
                       child: ElevatedButton(
                         onPressed: () async {
-                          LoginModel loginModel = LoginModel(
-                            phoneNumber: _phoneNumberController.text,
-                            password: _passwordController.text,
-                          );
+                          RegisterModel registerModel = RegisterModel(
+                              phoneNumber: _phoneNumber.text,
+                              password: _password.text,
+                              email: _email.text,
+                              name: _name.text,
+                              address: _address.text,
+                              status: true);
 
-                          AccountToken accountToken =
-                              await AccountService.login(loginModel);
+                          bool success =
+                              await AccountService.register(registerModel);
 
-                          if (accountToken.token == "") {
+                          if (!success) {
                             Future.delayed(
                               const Duration(seconds: 3),
                               () {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Login failed'),
+                                    content: Text('Register failed'),
                                   ),
                                 );
                               },
                             );
                           } else {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            prefs.setBool('loggedIn', true);
-                            prefs.setString('token', accountToken.token ?? "");
-
-                            Customer? customer =
-                                await CustomerService.getCustomerByAccountId(
-                                    accountToken.account!.accountId ?? 0);
-
-                            if (customer != null) {
-                              String customerString =
-                                  json.encode(customer.toJson());
-                              prefs.setString('customer', customerString);
-                              prefs.setString('phone', _phoneNumberController.text);
-                            }
-
                             Future.delayed(
                               const Duration(seconds: 3),
                               () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Register successfully! Please login'),
+                                  ),
+                                );
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const DashBoardScreen(initIndex: 0,),
+                                    builder: (context) => const LoginScreen(),
                                   ),
                                   (route) => false,
                                 );
@@ -145,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           }
                         },
-                        child: const Text('Login'),
+                        child: const Text('Sign Up'),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -158,25 +172,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Don't have an account? "),
+                        const Text("Already had an account? "),
                         TextButton(
                           onPressed: () {
-                            // Handle register button click
+                            // Handle login button click
                             Future.delayed(
                               const Duration(seconds: 3),
-                                  () {
+                              () {
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                    const RegisterScreen(),
+                                    builder: (context) => const LoginScreen(),
                                   ),
-                                      (route) => false,
+                                  (route) => false,
                                 );
                               },
                             );
                           },
-                          child: const Text('Register'),
+                          child: const Text('Login'),
                         ),
                       ],
                     ),
